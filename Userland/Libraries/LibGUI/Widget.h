@@ -79,7 +79,7 @@ public:
     void set_min_width(int width) { set_min_size(width, min_height()); }
     void set_min_height(int height) { set_min_size(min_width(), height); }
 
-    Gfx::IntSize max_size() const { return m_max_size; }
+    virtual Gfx::IntSize max_size() const { return m_max_size; }
     void set_max_size(const Gfx::IntSize&);
     void set_max_size(int width, int height) { set_max_size({ width, height }); }
 
