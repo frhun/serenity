@@ -229,6 +229,8 @@ public:
     bool is_visible() const { return m_visible; }
     void set_visible(bool);
 
+    bool wants_children_ignored() const { return m_wants_children_ignored; }
+
     bool spans_entire_window_horizontally() const;
 
     bool is_greedy_for_hits() const { return m_greedy_for_hits; }
@@ -322,6 +324,8 @@ protected:
     virtual void did_end_inspection() override;
 
     void show_or_hide_tooltip();
+    
+    bool m_wants_children_ignored { false };
 
 private:
     void handle_paint_event(PaintEvent&);

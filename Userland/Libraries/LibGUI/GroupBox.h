@@ -35,13 +35,13 @@ protected:
     virtual void paint_event(PaintEvent&) override;
 
 private:
-    virtual void enter_event(Core::Event&) override;
     virtual void leave_event(Core::Event&) override;
+    virtual void focusout_event(GUI::FocusEvent&) override;
     virtual void mouseup_event(GUI::MouseEvent&) override;
     virtual void mousedown_event(GUI::MouseEvent&) override;
-    virtual void mousemove_event(MouseEvent&) override;
-    virtual void keyup_event(KeyEvent&) override;
-    virtual void keydown_event(KeyEvent&) override;
+    virtual void mousemove_event(GUI::MouseEvent&) override;
+    virtual void keydown_event(GUI::KeyEvent&) override;
+    virtual void keyup_event(GUI::KeyEvent&) override;
 
     Gfx::IntRect clickable_rect() const;
 

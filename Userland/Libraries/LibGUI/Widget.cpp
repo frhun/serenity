@@ -336,16 +336,18 @@ void Widget::handle_paint_event(PaintEvent& event)
         painter.fill_rect(event.rect(), palette().color(background_role()));
     }
     paint_event(event);
-    auto children_clip_rect = this->children_clip_rect();
-    for_each_child_widget([&](auto& child) {
-        if (!child.is_visible())
+    if(!wants_children_ignored()){
+        auto children_clip_rect = this->children_clip_rect();
+        for_each_child_widget([&](auto& child) {
+            if (!child.is_visible())
+                return IterationDecision::Continue;
+            if (child.relative_rect().intersects(event.rect())) {
+                PaintEvent local_event(event.rect().intersected(children_clip_rect).intersected(child.relative_rect()).translated(-child.relative_position()));
+                child.dispatch_event(local_event, this);
+            }
             return IterationDecision::Continue;
-        if (child.relative_rect().intersects(event.rect())) {
-            PaintEvent local_event(event.rect().intersected(children_clip_rect).intersected(child.relative_rect()).translated(-child.relative_position()));
-            child.dispatch_event(local_event, this);
-        }
-        return IterationDecision::Continue;
-    });
+        });
+    }
     second_paint_event(event);
 
     auto* app = Application::the();

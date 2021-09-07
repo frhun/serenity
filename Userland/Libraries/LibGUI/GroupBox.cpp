@@ -40,9 +40,9 @@ void GroupBox::paint_event(PaintEvent& event)
 
     String extend_button_text;
     if(is_collapsed())
-        extend_button_text = AK::Utf8View{"+"}.as_string();
+        extend_button_text = {"+"};
     else
-        extend_button_text = AK::Utf8View{"-"}.as_string();
+        extend_button_text = {"-"};
 
     Gfx::IntRect extend_button_rect {
             extend_button_left_margin, 0,
@@ -109,19 +109,25 @@ Gfx::IntRect GroupBox::clickable_rect() const
     return Gfx::IntRect { 0, 0, width(), AK::max(extend_button_size, font().glyph_height() + extend_button_padding) };
 }
 
-void GroupBox::enter_event(Core::Event&)
-{
-    //m_hovered = true;
-    update();
-}
-
-void GroupBox::leave_event(Core::Event&)
+void GroupBox::leave_event(Core::Event& event)
 {
     m_hovered = false;
+    if(m_being_keyboard_pressed){
+        m_being_keyboard_pressed = false;
+        m_being_pressed = false;
+    }
     update();
+    Widget::leave_event(event);
 }
 
-void GroupBox::mousemove_event(MouseEvent& event)
+void GroupBox::focusout_event(GUI::FocusEvent& focus_event)
+{
+    m_being_keyboard_pressed = false;
+    update();
+    Widget::focusout_event(focus_event);
+}
+
+void GroupBox::mousemove_event(GUI::MouseEvent& event)
 {
     bool is_over = clickable_rect().contains(event.position());
 
@@ -136,7 +142,7 @@ void GroupBox::mousemove_event(MouseEvent& event)
 }
 
 
-void GroupBox::mousedown_event(MouseEvent& event)
+void GroupBox::mousedown_event(GUI::MouseEvent& event)
 {
     if (    is_collapsible()
         && event.button() == MouseButton::Left
@@ -162,7 +168,7 @@ void GroupBox::mouseup_event(GUI::MouseEvent& event)
     Widget::mouseup_event(event);
 }
 
-void GroupBox::keydown_event(KeyEvent& event)
+void GroupBox::keydown_event(GUI::KeyEvent& event)
 {
     if (event.key() == KeyCode::Key_Return || event.key() == KeyCode::Key_Space) {
         m_being_pressed = true;
@@ -180,7 +186,7 @@ void GroupBox::keydown_event(KeyEvent& event)
     Widget::keydown_event(event);
 }
 
-void GroupBox::keyup_event(KeyEvent& event)
+void GroupBox::keyup_event(GUI::KeyEvent& event)
 {
     bool was_being_pressed = m_being_pressed;
     if ((event.key() == KeyCode::Key_Return || event.key() == KeyCode::Key_Space)){
@@ -218,6 +224,7 @@ void GroupBox::set_collapsed(bool collapsed)
     if (m_collapsed == collapsed)
         return;
     m_collapsed = collapsed;
+    m_wants_children_ignored = collapsed;
     invalidate_layout();
     update();
 }
