@@ -7,6 +7,8 @@
 #include <LibGUI/Layout.h>
 #include <LibGUI/ScrollableContainerWidget.h>
 
+REGISTER_WIDGET(GUI, ScrollableContainerWidget)
+
 namespace GUI {
 
 ScrollableContainerWidget::ScrollableContainerWidget()
