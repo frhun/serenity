@@ -65,6 +65,8 @@ void GroupBox::paint_event(PaintEvent& event)
     };
     Gfx::StylePainter::paint_frame(painter, frame_rect, palette(), Gfx::FrameShape::Box, Gfx::FrameShadow::Sunken, frame_width);
 
+    bool visually_pressed = m_being_pressed && (m_hovered || m_being_keyboard_pressed);
+
     int horizontal_title_offset = 0;
     if(is_collapsible() || is_collapsed()){
         horizontal_title_offset = extend_button_rect.x() + extend_button_rect.width();
@@ -73,13 +75,18 @@ void GroupBox::paint_event(PaintEvent& event)
                 extend_button_rect,
                 palette(),
                 Gfx::ButtonStyle::Normal,
-                m_being_pressed && (m_hovered || m_being_keyboard_pressed),
+                visually_pressed,
                 m_hovered,
                 false /*checked*/,
                 (is_collapsible() || is_collapsed()) && is_enabled(),
                 is_focused()
             );
-        painter.draw_text(extend_button_rect, extend_button_text, Gfx::TextAlignment::Center, palette().button_text());
+        painter.draw_text(
+                (visually_pressed ? extend_button_rect.translated({2, 2}).shrunken(1, 1) : extend_button_rect),
+                extend_button_text,
+                Gfx::TextAlignment::Center,
+                palette().button_text()
+            );
     }
 
     if (!m_title.is_empty()) {
@@ -117,13 +124,18 @@ void GroupBox::leave_event(Core::Event& event)
         m_being_pressed = false;
     }
     update();
+    event.accept();
     Widget::leave_event(event);
 }
 
 void GroupBox::focusout_event(GUI::FocusEvent& focus_event)
 {
-    m_being_keyboard_pressed = false;
-    update();
+    if(m_being_keyboard_pressed){
+        m_being_pressed = false;
+        m_being_keyboard_pressed = false;
+        focus_event.accept();
+        update();
+    }
     Widget::focusout_event(focus_event);
 }
 
@@ -135,6 +147,7 @@ void GroupBox::mousemove_event(GUI::MouseEvent& event)
         m_hovered = is_over;
         if(m_being_pressed && !m_being_keyboard_pressed && !(event.buttons() & MouseButton::Left))
             m_being_pressed = false;
+        event.accept();
         update();
     }
 
@@ -148,6 +161,7 @@ void GroupBox::mousedown_event(GUI::MouseEvent& event)
         && event.button() == MouseButton::Left
         && clickable_rect().contains(event.position())) {
         m_being_pressed = true;
+        event.accept();
         update();
     }
     Widget::mousedown_event(event);
@@ -162,6 +176,7 @@ void GroupBox::mouseup_event(GUI::MouseEvent& event)
         ) {
         toggle_collapsed();
         m_being_pressed = false;
+        event.accept();
         update();
     }
 
@@ -194,8 +209,8 @@ void GroupBox::keyup_event(GUI::KeyEvent& event)
         m_being_keyboard_pressed = false;
         if (was_being_pressed) {
             toggle_collapsed();
-            update();
             event.accept();
+            update();
             return;
         }
     }
