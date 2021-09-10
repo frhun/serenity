@@ -70,7 +70,7 @@ public:
         return layout;
     }
 
-    virtual Gfx::IntSize min_size() const;
+    virtual Gfx::IntSize min_size() const { return m_min_size; }
     void set_min_size(const Gfx::IntSize&);
     void set_min_size(int width, int height) { set_min_size({ width, height }); }
 

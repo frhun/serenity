@@ -1,0 +1,7 @@
+- don't include Frame in usable area of GroupBox/Frame when a frame is visible
+- make GroupBox Foldable
+- make GroupBox dynamically calculate the min_[height/width] from contents
+- make splitters respect the min size of children through property
+- add property linkers/contstrainers
+ -> connect arbitrary properties (even of different objects) together
+ - delete the connector if any of the linked objects are deleted - dual dependant WeakPtr

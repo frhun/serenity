@@ -1,0 +1,4 @@
+[App]
+Name=Finder
+Executable=/bin/Finder
+Category=Utilities
