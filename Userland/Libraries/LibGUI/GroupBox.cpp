@@ -28,12 +28,24 @@ GroupBox::~GroupBox()
 {
 }
 
+// Constants that define the look of the widget, and are needed to calculate various values
 const int extend_button_padding = 4;
 const int extend_button_size = 18;
+const int frame_width = 2;
+
+Margins GroupBox::content_margins() const
+{
+    return {(is_collapsible() || is_collapsed() ?
+            AK::max(extend_button_size, font().glyph_height() + extend_button_padding)
+            : (!m_title.is_empty() ? font().glyph_height() : frame_width)
+        ),
+        frame_width,
+        frame_width,
+        frame_width};
+}
 
 void GroupBox::paint_event(PaintEvent& event)
 {
-    const int frame_width = 2;
     const int extend_button_left_margin = 6;
     Painter painter(*this);
     painter.add_clip_rect(event.rect());

@@ -8,7 +8,7 @@ min_height: 300
         title: "Input Domain"
         layout: @GUI::VerticalBoxLayout {
             spacing: 4
-            margins: [14, 6, 4, 6]
+            margins: [4, 6, 4, 6]
         }
         
         @GUI::Widget {
@@ -41,18 +41,19 @@ min_height: 300
         
         @GUI::GroupBox {
             layout: @GUI::HorizontalBoxLayout {
-                margins: [20, 2, 2, 2]
+                margins: [4]
+                spacing: 4
             }
             title: "Path Filters"
             collapsible: true
             
             @GUI::ListView {
-                name: "results_list"
+                name: "filter_list"
             }
             
             @GUI::Widget {
                 layout: @GUI::VerticalBoxLayout {
-                    margins: [4]
+                    margins: [0]
                     spacing: 4
                 }
                 max_width: 88
@@ -83,7 +84,7 @@ min_height: 300
         title: "Search Pattern"
         layout: @GUI::VerticalBoxLayout {
             spacing: 4
-            margins: [14, 6, 6]
+            margins: [14, 6, 6, 6]
         }
         shrink_to_fit: true
         

@@ -6,6 +6,7 @@
 
 #include <AK/JsonObject.h>
 #include <LibGUI/BoxLayout.h>
+#include <LibGUI/Margins.h>
 #include <LibGUI/Widget.h>
 #include <LibGfx/Orientation.h>
 #include <stdio.h>
@@ -22,15 +23,15 @@ BoxLayout::BoxLayout(Orientation orientation)
         "orientation", [this] { return m_orientation == Gfx::Orientation::Vertical ? "Vertical" : "Horizontal"; }, nullptr);
 }
 
-Gfx::IntSize BoxLayout::preferred_size() const
+Gfx::IntSize BoxLayout::preferred_size(Widget& container_widget) const
 {
     Gfx::IntSize size;
-    size.set_primary_size_for_orientation(orientation(), preferred_primary_size());
-    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size());
+    size.set_primary_size_for_orientation(orientation(), preferred_primary_size(container_widget));
+    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size(container_widget));
     return size;
 }
 
-int BoxLayout::preferred_primary_size() const
+int BoxLayout::preferred_primary_size(Widget& container_widget) const
 {
     int size = 0;
 
@@ -41,7 +42,7 @@ int BoxLayout::preferred_primary_size() const
         int max_size = entry.widget->max_size().primary_size_for_orientation(orientation());
         int preferred_primary_size = -1;
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_primary_size = entry.widget->layout()->preferred_size().primary_size_for_orientation(orientation());
+            preferred_primary_size = entry.widget->layout()->preferred_size(container_widget).primary_size_for_orientation(orientation());
         }
         int item_size = max(0, preferred_primary_size);
         item_size = max(min_size, item_size);
@@ -56,12 +57,15 @@ int BoxLayout::preferred_primary_size() const
     else
         size += margins().top() + margins().bottom();
 
+    auto content_margins = container_widget.content_margins();
+    size += content_margins.get_first_primary_for_orientation(orientation()) + content_margins.get_second_primary_for_orientation(orientation());
+
     if (!size)
         return -1;
     return size;
 }
 
-int BoxLayout::preferred_secondary_size() const
+int BoxLayout::preferred_secondary_size(Widget& container_widget) const
 {
     int size = 0;
     for (auto& entry : m_entries) {
@@ -70,7 +74,7 @@ int BoxLayout::preferred_secondary_size() const
         int min_size = entry.widget->min_size().secondary_size_for_orientation(orientation());
         int preferred_secondary_size = -1;
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_secondary_size = entry.widget->layout()->preferred_size().secondary_size_for_orientation(orientation());
+            preferred_secondary_size = entry.widget->layout()->preferred_size(container_widget).secondary_size_for_orientation(orientation());
             size = max(size, preferred_secondary_size);
         }
         size = max(min_size, size);
@@ -80,6 +84,9 @@ int BoxLayout::preferred_secondary_size() const
         size += margins().top() + margins().bottom();
     else
         size += margins().left() + margins().right();
+
+    auto content_margins = container_widget.content_margins();
+    size += content_margins.get_first_secondary_for_orientation(orientation()) + content_margins.get_second_secondary_for_orientation(orientation());
 
     if (!size)
         return -1;
@@ -115,7 +122,7 @@ void BoxLayout::run(Widget& widget)
         auto max_size = entry.widget->max_size();
 
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            auto preferred_size = entry.widget->layout()->preferred_size();
+            auto preferred_size = entry.widget->layout()->preferred_size(widget);
             min_size = max_size = preferred_size;
         }
 
@@ -125,7 +132,8 @@ void BoxLayout::run(Widget& widget)
     if (items.is_empty())
         return;
 
-    int available_size = widget.size().primary_size_for_orientation(orientation()) - spacing() * (items.size() - 1);
+    Gfx::IntRect content_rect = widget.content_rect();
+    int available_size = content_rect.size().primary_size_for_orientation(orientation()) - spacing() * (items.size() - 1);
     int unfinished_items = items.size();
 
     if (orientation() == Gfx::Orientation::Horizontal)
@@ -180,10 +188,10 @@ void BoxLayout::run(Widget& widget)
     }
 
     // Pass 3: Place the widgets.
-    int current_x = margins().left();
-    int current_y = margins().top();
+    int current_x = margins().left() + content_rect.x();
+    int current_y = margins().top() + content_rect.y();
 
-    auto widget_rect_with_margins_subtracted = widget.rect();
+    auto widget_rect_with_margins_subtracted = content_rect;
     widget_rect_with_margins_subtracted.take_from_left(margins().left());
     widget_rect_with_margins_subtracted.take_from_top(margins().top());
     widget_rect_with_margins_subtracted.take_from_right(margins().right());
@@ -195,7 +203,7 @@ void BoxLayout::run(Widget& widget)
         rect.set_primary_size_for_orientation(orientation(), item.size);
 
         if (item.widget) {
-            int secondary = widget.size().secondary_size_for_orientation(orientation());
+            int secondary = widget.content_size().secondary_size_for_orientation(orientation());
             if (orientation() == Gfx::Orientation::Horizontal)
                 secondary -= margins().top() + margins().bottom();
             else

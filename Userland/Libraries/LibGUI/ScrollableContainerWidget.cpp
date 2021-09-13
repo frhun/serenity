@@ -39,7 +39,7 @@ void ScrollableContainerWidget::update_widget_size()
     m_widget->do_layout();
     if (m_widget->is_shrink_to_fit() && m_widget->layout()) {
         auto new_size = frame_inner_rect().size();
-        auto preferred_size = m_widget->layout()->preferred_size();
+        auto preferred_size = m_widget->layout()->preferred_size(*m_widget);
         if (preferred_size.width() != -1)
             new_size.set_width(preferred_size.width());
         if (preferred_size.height() != -1)

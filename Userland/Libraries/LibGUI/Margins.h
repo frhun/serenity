@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include <LibGfx/Rect.h>
+#include <LibGfx/Orientation.h>
+
 namespace GUI {
 
 class Margins {
@@ -40,6 +43,56 @@ public:
     {
     }
     ~Margins() { }
+
+    [[nodiscard]] Gfx::IntRect apply_to(Gfx::IntRect input) const
+    {
+        Gfx::IntRect output = input;
+        output.take_from_left(left());
+        output.take_from_top(top());
+        output.take_from_right(right());
+        output.take_from_bottom(bottom());
+        return output;
+    }
+
+    [[nodiscard]] int get_first_primary_for_orientation(Orientation orientation) const
+    {
+        if(orientation == Orientation::Horizontal)
+            return left();
+        if(orientation == Orientation::Vertical)
+            return top();
+        VERIFY_NOT_REACHED();
+        return 0;
+    }
+
+    [[nodiscard]] int get_second_primary_for_orientation(Orientation orientation) const
+    {
+        if(orientation == Orientation::Horizontal)
+            return right();
+        if(orientation == Orientation::Vertical)
+            return bottom();
+        VERIFY_NOT_REACHED();
+        return 0;
+    }
+
+    [[nodiscard]] int get_first_secondary_for_orientation(Orientation orientation) const
+    {
+        if(orientation == Orientation::Vertical)
+            return left();
+        if(orientation == Orientation::Horizontal)
+            return top();
+        VERIFY_NOT_REACHED();
+        return 0;
+    }
+
+    [[nodiscard]] int get_second_secondary_for_orientation(Orientation orientation) const
+    {
+        if(orientation == Orientation::Vertical)
+            return right();
+        if(orientation == Orientation::Horizontal)
+            return bottom();
+        VERIFY_NOT_REACHED();
+        return 0;
+    }
 
     bool is_null() const { return !m_left && !m_top && !m_right && !m_bottom; }
 

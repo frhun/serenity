@@ -139,8 +139,8 @@ void Splitter::mousedown_event(MouseEvent& event)
 
 Gfx::IntRect Splitter::rect_between_widgets(GUI::Widget const& first_widget, GUI::Widget const& second_widget, bool honor_content_margins) const
 {
-    auto first_widget_rect = honor_content_margins ? first_widget.content_rect() : first_widget.relative_rect();
-    auto second_widget_rect = honor_content_margins ? second_widget.content_rect() : second_widget.relative_rect();
+    auto first_widget_rect = honor_content_margins ? first_widget.relative_non_grabbable_rect() : first_widget.relative_rect();
+    auto second_widget_rect = honor_content_margins ? second_widget.relative_non_grabbable_rect() : second_widget.relative_rect();
 
     auto first_edge = first_widget_rect.last_edge_for_orientation(m_orientation);
     auto second_edge = second_widget_rect.first_edge_for_orientation(m_orientation);
