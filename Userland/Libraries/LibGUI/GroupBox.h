@@ -39,6 +39,7 @@ private:
     virtual void mousemove_event(GUI::MouseEvent&) override;
     virtual void keydown_event(GUI::KeyEvent&) override;
     virtual void keyup_event(GUI::KeyEvent&) override;
+    virtual void fonts_change_event(FontsChangeEvent&) override;
 
     Gfx::IntRect clickable_rect() const;
 
