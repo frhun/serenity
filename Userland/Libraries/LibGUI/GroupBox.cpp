@@ -32,6 +32,15 @@ const int extend_button_padding = 4;
 const int extend_button_size = 18;
 const int frame_width = 2;
 
+Margins GroupBox::content_margins() const
+{
+    return { (is_collapsible() || is_collapsed() ? AK::max(extend_button_size, font().glyph_height() + extend_button_padding * 2)
+                                                 : (!m_title.is_empty() ? font().glyph_height() + 1 /*room for the focus rect*/ : frame_width)),
+        frame_width,
+        frame_width,
+        frame_width };
+}
+
 void GroupBox::paint_event(PaintEvent& event)
 {
     const int extend_button_left_margin = 6;

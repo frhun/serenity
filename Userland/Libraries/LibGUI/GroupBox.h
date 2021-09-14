@@ -24,6 +24,7 @@ public:
     void set_collapsed(bool);
     void toggle_collapsed();
     virtual Gfx::IntSize max_size() const override;
+    virtual Margins content_margins() const override;
 
 protected:
     explicit GroupBox(const StringView& title = {});
