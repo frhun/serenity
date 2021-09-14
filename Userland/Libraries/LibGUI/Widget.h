@@ -9,6 +9,7 @@
 #include <AK/EnumBits.h>
 #include <AK/JsonObject.h>
 #include <AK/String.h>
+#include <AK/Optional.h>
 #include <LibCore/Object.h>
 #include <LibGUI/Event.h>
 #include <LibGUI/Forward.h>
@@ -61,6 +62,8 @@ public:
     Layout* layout() { return m_layout.ptr(); }
     const Layout* layout() const { return m_layout.ptr(); }
     void set_layout(NonnullRefPtr<Layout>);
+
+    Optional<Gfx::IntSize> layout_preferred_size() const;
 
     template<class T, class... Args>
     inline T& set_layout(Args&&... args)

@@ -51,14 +51,14 @@ void TimelineContainer::update_widget_sizes()
 {
     {
         m_timeline_view->do_layout();
-        auto preferred_size = m_timeline_view->layout()->preferred_size(*m_timeline_view);
+        auto preferred_size = m_timeline_view->layout_preferred_size().value();
         m_timeline_view->resize(preferred_size);
         set_content_size(preferred_size);
     }
 
     {
         m_header_container->do_layout();
-        auto preferred_size = m_header_container->layout()->preferred_size(*m_header_container);
+        auto preferred_size = m_header_container->layout_preferred_size().value();
         m_header_container->resize(preferred_size);
         set_size_occupied_by_fixed_elements({ preferred_size.width(), 0 });
     }

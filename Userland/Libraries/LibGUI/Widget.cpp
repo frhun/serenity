@@ -389,6 +389,13 @@ void Widget::set_layout(NonnullRefPtr<Layout> layout)
     }
 }
 
+Optional<Gfx::IntSize> Widget::layout_preferred_size() const
+{
+    if(!layout())
+        return {};
+    return {layout()->preferred_size(*this)};
+}
+
 void Widget::do_layout()
 {
     for_each_child_widget([&](auto& child) {

@@ -41,8 +41,10 @@ int BoxLayout::preferred_primary_size(Widget const& widget) const
         int min_size = entry.widget->min_size().primary_size_for_orientation(orientation());
         int max_size = entry.widget->max_size().primary_size_for_orientation(orientation());
         int preferred_primary_size = -1;
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_primary_size = entry.widget->layout()->preferred_size(*entry.widget).primary_size_for_orientation(orientation());
+        if (entry.widget->is_shrink_to_fit()) {
+            auto maybe_preferred_size = entry.widget->layout_preferred_size();
+            if(maybe_preferred_size.has_value())
+                preferred_primary_size = maybe_preferred_size.value().primary_size_for_orientation(orientation());
         }
         int item_size = max(0, preferred_primary_size);
         item_size = max(min_size, item_size);
@@ -71,9 +73,12 @@ int BoxLayout::preferred_secondary_size(Widget const& widget) const
             continue;
         int min_size = entry.widget->min_size().secondary_size_for_orientation(orientation());
         int preferred_secondary_size = -1;
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_secondary_size = entry.widget->layout()->preferred_size(*entry.widget).secondary_size_for_orientation(orientation());
-            size = max(size, preferred_secondary_size);
+        if (entry.widget->is_shrink_to_fit()) {
+            auto maybe_preferred_size = entry.widget->layout_preferred_size();
+            if(maybe_preferred_size.has_value()){
+                preferred_secondary_size = maybe_preferred_size.value().secondary_size_for_orientation(orientation());
+                size = max(size, preferred_secondary_size);
+            }
         }
         size = max(min_size, size);
     }
@@ -117,9 +122,10 @@ void BoxLayout::run(Widget& widget)
         auto min_size = entry.widget->min_size();
         auto max_size = entry.widget->max_size();
 
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            auto preferred_size = entry.widget->layout()->preferred_size(*entry.widget);
-            min_size = max_size = preferred_size;
+        if (entry.widget->is_shrink_to_fit()) {
+            auto maybe_preferred_size = entry.widget->layout_preferred_size();
+            if(maybe_preferred_size.has_value())
+                min_size = max_size = maybe_preferred_size.value();
         }
 
         items.append(Item { entry.widget.ptr(), min_size.primary_size_for_orientation(orientation()), max_size.primary_size_for_orientation(orientation()) });
