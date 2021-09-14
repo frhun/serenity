@@ -946,16 +946,17 @@ Vector<Widget&> Window::focusable_widgets(FocusSource source) const
             if (seen_widgets.set(&effective_focus_widget) == AK::HashSetResult::InsertedNewEntry)
                 collected_widgets.append(effective_focus_widget);
         }
-        widget.for_each_child_widget([&](auto& child) {
-            if (!child.is_visible())
+        if (!widget.wants_children_ignored())
+            widget.for_each_child_widget([&](auto& child) {
+                if (!child.is_visible())
+                    return IterationDecision::Continue;
+                if (!child.is_enabled())
+                    return IterationDecision::Continue;
+                if (!child.is_auto_focusable())
+                    return IterationDecision::Continue;
+                collect_focusable_widgets(child);
                 return IterationDecision::Continue;
-            if (!child.is_enabled())
-                return IterationDecision::Continue;
-            if (!child.is_auto_focusable())
-                return IterationDecision::Continue;
-            collect_focusable_widgets(child);
-            return IterationDecision::Continue;
-        });
+            });
     };
 
     collect_focusable_widgets(const_cast<Widget&>(*m_main_widget));
