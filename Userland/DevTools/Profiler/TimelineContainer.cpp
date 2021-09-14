@@ -58,7 +58,7 @@ void TimelineContainer::update_widget_sizes()
 
     {
         m_header_container->do_layout();
-        auto preferred_size = m_header_container->layout()->preferred_size(*m_timeline_view);
+        auto preferred_size = m_header_container->layout()->preferred_size(*m_header_container);
         m_header_container->resize(preferred_size);
         set_size_occupied_by_fixed_elements({ preferred_size.width(), 0 });
     }

@@ -23,15 +23,15 @@ BoxLayout::BoxLayout(Orientation orientation)
         "orientation", [this] { return m_orientation == Gfx::Orientation::Vertical ? "Vertical" : "Horizontal"; }, nullptr);
 }
 
-Gfx::IntSize BoxLayout::preferred_size(Widget& container_widget) const
+Gfx::IntSize BoxLayout::preferred_size(Widget const& widget) const
 {
     Gfx::IntSize size;
-    size.set_primary_size_for_orientation(orientation(), preferred_primary_size(container_widget));
-    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size(container_widget));
+    size.set_primary_size_for_orientation(orientation(), preferred_primary_size(widget));
+    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size(widget));
     return size;
 }
 
-int BoxLayout::preferred_primary_size(Widget& container_widget) const
+int BoxLayout::preferred_primary_size(Widget const& widget) const
 {
     int size = 0;
 
@@ -42,7 +42,7 @@ int BoxLayout::preferred_primary_size(Widget& container_widget) const
         int max_size = entry.widget->max_size().primary_size_for_orientation(orientation());
         int preferred_primary_size = -1;
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_primary_size = entry.widget->layout()->preferred_size(container_widget).primary_size_for_orientation(orientation());
+            preferred_primary_size = entry.widget->layout()->preferred_size(*entry.widget).primary_size_for_orientation(orientation());
         }
         int item_size = max(0, preferred_primary_size);
         item_size = max(min_size, item_size);
@@ -52,20 +52,18 @@ int BoxLayout::preferred_primary_size(Widget& container_widget) const
     if (size > 0)
         size -= spacing();
 
+    auto content_margins = widget.content_margins();
     if (orientation() == Gfx::Orientation::Horizontal)
-        size += margins().left() + margins().right();
+        size += margins().left() + margins().right() + content_margins.left() + content_margins.right();
     else
-        size += margins().top() + margins().bottom();
-
-    auto content_margins = container_widget.content_margins();
-    size += content_margins.get_first_primary_for_orientation(orientation()) + content_margins.get_second_primary_for_orientation(orientation());
+        size += margins().top() + margins().bottom() + content_margins.top() + content_margins.bottom();
 
     if (!size)
         return -1;
     return size;
 }
 
-int BoxLayout::preferred_secondary_size(Widget& container_widget) const
+int BoxLayout::preferred_secondary_size(Widget const& widget) const
 {
     int size = 0;
     for (auto& entry : m_entries) {
@@ -74,19 +72,17 @@ int BoxLayout::preferred_secondary_size(Widget& container_widget) const
         int min_size = entry.widget->min_size().secondary_size_for_orientation(orientation());
         int preferred_secondary_size = -1;
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_secondary_size = entry.widget->layout()->preferred_size(container_widget).secondary_size_for_orientation(orientation());
+            preferred_secondary_size = entry.widget->layout()->preferred_size(*entry.widget).secondary_size_for_orientation(orientation());
             size = max(size, preferred_secondary_size);
         }
         size = max(min_size, size);
     }
 
+    auto content_margins = widget.content_margins();
     if (orientation() == Gfx::Orientation::Horizontal)
-        size += margins().top() + margins().bottom();
+        size += margins().top() + margins().bottom() + content_margins.top() + content_margins.bottom();
     else
-        size += margins().left() + margins().right();
-
-    auto content_margins = container_widget.content_margins();
-    size += content_margins.get_first_secondary_for_orientation(orientation()) + content_margins.get_second_secondary_for_orientation(orientation());
+        size += margins().left() + margins().right() + content_margins.left() + content_margins.right();
 
     if (!size)
         return -1;
@@ -122,7 +118,7 @@ void BoxLayout::run(Widget& widget)
         auto max_size = entry.widget->max_size();
 
         if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            auto preferred_size = entry.widget->layout()->preferred_size(widget);
+            auto preferred_size = entry.widget->layout()->preferred_size(*entry.widget);
             min_size = max_size = preferred_size;
         }
 

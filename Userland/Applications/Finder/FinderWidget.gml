@@ -8,7 +8,7 @@ min_height: 300
         title: "Input Domain"
         layout: @GUI::VerticalBoxLayout {
             spacing: 4
-            margins: [4, 6, 4, 6]
+            margins: [4]
         }
         
         @GUI::Widget {
@@ -84,7 +84,7 @@ min_height: 300
         title: "Search Pattern"
         layout: @GUI::VerticalBoxLayout {
             spacing: 4
-            margins: [14, 6, 6, 6]
+            margins: [4]
         }
         shrink_to_fit: true
         
