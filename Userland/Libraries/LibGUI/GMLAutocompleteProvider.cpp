@@ -153,6 +153,8 @@ void GMLAutocompleteProvider::provide_completions(Function<void(Vector<Entry>)> 
         }
         if (can_have_declared_layout(class_names.last()) && "layout"sv.starts_with(identifier_string))
             identifier_entries.empend("layout", identifier_string.length());
+        if (class_names.last() == "GUI::ScrollableContainerWidget" && "content_widget"sv.starts_with(identifier_string))
+            identifier_entries.empend("content_widget", identifier_string.length());
         // No need to suggest anything if it's already completely typed out!
         if (identifier_entries.size() == 1 && identifier_entries.first().completion == identifier_string)
             identifier_entries.clear();
@@ -193,6 +195,13 @@ void GMLAutocompleteProvider::provide_completions(Function<void(Vector<Entry>)> 
                     return;
                 if (registration.class_name().contains("Layout"))
                     class_entries.empend(String::formatted("@{}", registration.class_name()), 0u);
+            });
+        }
+        if (identifier_string == "content_widget") {
+            Core::ObjectClassRegistration::for_each([&](const Core::ObjectClassRegistration& registration) {
+                if (!registration.is_derived_from(widget_class))
+                    return;
+                class_entries.empend(String::formatted("@{}", registration.class_name()), 0u);
             });
         }
         break;
