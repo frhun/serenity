@@ -12,6 +12,7 @@
 #include <LibCore/Object.h>
 #include <LibGUI/Event.h>
 #include <LibGUI/Forward.h>
+#include <LibGUI/Layout.h>
 #include <LibGUI/Margins.h>
 #include <LibGfx/Color.h>
 #include <LibGfx/Forward.h>
@@ -87,6 +88,20 @@ public:
     int max_height() const { return max_size().height(); }
     void set_max_width(int width) { set_max_size(width, max_height()); }
     void set_max_height(int height) { set_max_size(max_width(), height); }
+
+    virtual Gfx::IntSize preferred_size() const
+    {
+        if (!layout() || !is_shrink_to_fit())
+            return m_preferred_size;
+        return layout()->preferred_size();
+    }
+    void set_preferred_size(const Gfx::IntSize&);
+    void set_preferred_size(int width, int height) { set_preferred_size({ width, height }); }
+
+    int preferred_width() const { return preferred_size().width(); }
+    int preferred_height() const { return preferred_size().height(); }
+    void set_preferred_width(int width) { set_preferred_size(width, preferred_height()); }
+    void set_preferred_height(int height) { set_preferred_size(preferred_width(), height); }
 
     void set_fixed_size(const Gfx::IntSize& size)
     {
@@ -361,6 +376,7 @@ private:
 
     Gfx::IntSize m_min_size { -1, -1 };
     Gfx::IntSize m_max_size { -1, -1 };
+    Gfx::IntSize m_preferred_size { -1, -1 };
     Margins m_grabbable_margins;
 
     bool m_fill_with_background_color { false };

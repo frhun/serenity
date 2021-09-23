@@ -40,10 +40,7 @@ int BoxLayout::preferred_primary_size() const
             continue;
         int min_size = entry.widget->min_size().primary_size_for_orientation(orientation());
         int max_size = entry.widget->max_size().primary_size_for_orientation(orientation());
-        int preferred_primary_size = -1;
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_primary_size = entry.widget->layout()->preferred_size().primary_size_for_orientation(orientation());
-        }
+        int preferred_primary_size = entry.widget->preferred_size().primary_size_for_orientation(orientation());
         int item_size = max(0, preferred_primary_size);
         item_size = max(min_size, item_size);
         item_size = min(max_size, item_size);
@@ -69,11 +66,8 @@ int BoxLayout::preferred_secondary_size() const
         if (!entry.widget || !entry.widget->is_visible())
             continue;
         int min_size = entry.widget->min_size().secondary_size_for_orientation(orientation());
-        int preferred_secondary_size = -1;
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            preferred_secondary_size = entry.widget->layout()->preferred_size().secondary_size_for_orientation(orientation());
-            size = max(size, preferred_secondary_size);
-        }
+        int preferred_secondary_size = entry.widget->preferred_size().secondary_size_for_orientation(orientation());
+        size = max(preferred_secondary_size, size);
         size = max(min_size, size);
     }
 
@@ -114,10 +108,14 @@ void BoxLayout::run(Widget& widget)
             continue;
         auto min_size = entry.widget->min_size();
         auto max_size = entry.widget->max_size();
-
-        if (entry.widget->is_shrink_to_fit() && entry.widget->layout()) {
-            auto preferred_size = entry.widget->layout()->preferred_size();
-            min_size = max_size = preferred_size;
+        auto preferred_size = entry.widget->preferred_size();
+        if (preferred_size.width() >= 0) {
+            min_size.set_width(preferred_size.width());
+            max_size.set_width(preferred_size.width());
+        }
+        if (preferred_size.height() >= 0) {
+            min_size.set_height(preferred_size.height());
+            max_size.set_height(preferred_size.height());
         }
 
         items.append(Item { entry.widget.ptr(), min_size.primary_size_for_orientation(orientation()), max_size.primary_size_for_orientation(orientation()) });
