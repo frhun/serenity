@@ -93,7 +93,7 @@ public:
     {
         if (!layout() || !is_shrink_to_fit())
             return m_preferred_size;
-        return layout()->preferred_size();
+        return layout()->preferred_size(*this);
     }
     void set_preferred_size(const Gfx::IntSize&);
     void set_preferred_size(int width, int height) { set_preferred_size({ width, height }); }

@@ -23,15 +23,15 @@ BoxLayout::BoxLayout(Orientation orientation)
         "orientation", [this] { return m_orientation == Gfx::Orientation::Vertical ? "Vertical" : "Horizontal"; }, nullptr);
 }
 
-Gfx::IntSize BoxLayout::preferred_size() const
+Gfx::IntSize BoxLayout::preferred_size(Widget const& widget) const
 {
     Gfx::IntSize size;
-    size.set_primary_size_for_orientation(orientation(), preferred_primary_size());
-    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size());
+    size.set_primary_size_for_orientation(orientation(), preferred_primary_size(widget));
+    size.set_secondary_size_for_orientation(orientation(), preferred_secondary_size(widget));
     return size;
 }
 
-int BoxLayout::preferred_primary_size() const
+int BoxLayout::preferred_primary_size(Widget const& widget) const
 {
     int size = 0;
 
@@ -49,17 +49,18 @@ int BoxLayout::preferred_primary_size() const
     if (size > 0)
         size -= spacing();
 
+    auto content_margins = widget.content_margins();
     if (orientation() == Gfx::Orientation::Horizontal)
-        size += margins().left() + margins().right();
+        size += margins().left() + margins().right() + content_margins.left() + content_margins.right();
     else
-        size += margins().top() + margins().bottom();
+        size += margins().top() + margins().bottom() + content_margins.top() + content_margins.bottom();
 
     if (!size)
         return -1;
     return size;
 }
 
-int BoxLayout::preferred_secondary_size() const
+int BoxLayout::preferred_secondary_size(Widget const& widget) const
 {
     int size = 0;
     for (auto& entry : m_entries) {
@@ -71,10 +72,11 @@ int BoxLayout::preferred_secondary_size() const
         size = max(min_size, size);
     }
 
+    auto content_margins = widget.content_margins();
     if (orientation() == Gfx::Orientation::Horizontal)
-        size += margins().top() + margins().bottom();
+        size += margins().top() + margins().bottom() + content_margins.top() + content_margins.bottom();
     else
-        size += margins().left() + margins().right();
+        size += margins().left() + margins().right() + content_margins.left() + content_margins.right();
 
     if (!size)
         return -1;

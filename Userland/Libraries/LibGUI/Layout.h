@@ -30,7 +30,7 @@ public:
     void remove_widget(Widget&);
 
     virtual void run(Widget&) = 0;
-    virtual Gfx::IntSize preferred_size() const = 0;
+    virtual Gfx::IntSize preferred_size(Widget const&) const = 0;
 
     void notify_adopted(Badge<Widget>, Widget&);
     void notify_disowned(Badge<Widget>, Widget&);
