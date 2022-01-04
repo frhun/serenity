@@ -44,8 +44,7 @@
 
         preferred_height: "shrink"
 
-        // HACK: using an empty widget as a spacer
-        @GUI::Widget {}
+        @GUI::Layout::Spacer
 
         @GUI::DialogButton {
             name: "ok_button"
