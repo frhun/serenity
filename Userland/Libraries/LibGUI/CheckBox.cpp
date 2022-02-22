@@ -25,8 +25,8 @@ CheckBox::CheckBox(String text)
 {
     REGISTER_BOOL_PROPERTY("autosize", is_autosize, set_autosize);
 
-    set_min_width(32);
-    set_fixed_height(22);
+    set_min_size({ 22, 22 });
+    set_preferred_size({ GUI::SpecialDimension::OpportunisticGrow, 22 });
 }
 
 void CheckBox::paint_event(PaintEvent& event)
