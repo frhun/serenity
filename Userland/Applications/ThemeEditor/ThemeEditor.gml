@@ -11,7 +11,7 @@
         layout: @GUI::HorizontalBoxLayout {
             margins: [4, 4, 4, 4]
         }
-        shrink_to_fit: true
+        preferred_height: "fit"
         title: "Colors"
 
         @GUI::ComboBox {
@@ -29,7 +29,7 @@
         layout: @GUI::HorizontalBoxLayout {
             margins: [4, 4, 4, 4]
         }
-        shrink_to_fit: true
+        preferred_height: "fit"
         title: "Alignments"
 
         @GUI::ComboBox {
@@ -47,7 +47,7 @@
         layout: @GUI::HorizontalBoxLayout {
             margins: [4, 4, 4, 4]
         }
-        shrink_to_fit: true
+        preferred_height: "fit"
         title: "Flags"
 
         @GUI::ComboBox {
@@ -56,7 +56,7 @@
             fixed_width: 230
         }
 
-        @GUI::Widget {}
+        @GUI::Layout::Spacer
 
         @GUI::CheckBox {
             name: "flag_input"
@@ -68,7 +68,7 @@
         layout: @GUI::HorizontalBoxLayout {
             margins: [4, 4, 4, 4]
         }
-        shrink_to_fit: true
+        preferred_height: "fit"
         title: "Metrics"
 
         @GUI::ComboBox {
@@ -86,7 +86,7 @@
         layout: @GUI::HorizontalBoxLayout {
             margins: [4, 4, 4, 4]
         }
-        shrink_to_fit: true
+        preferred_height: "fit"
         title: "Paths"
 
         @GUI::ComboBox {
