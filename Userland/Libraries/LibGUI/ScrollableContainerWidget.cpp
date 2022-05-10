@@ -58,11 +58,21 @@ void ScrollableContainerWidget::update_widget_size()
     }
 }
 
+void ScrollableContainerWidget::update_widget_min_size()
+{
+    if (!m_widget)
+        set_min_content_size({});
+
+    set_min_content_size(Gfx::IntSize(m_widget->effective_min_size().replace_component_if_matching_with(SpecialDimension::Shrink, UISize { 0, 0 })));
+}
+
 void ScrollableContainerWidget::resize_event(GUI::ResizeEvent& event)
 {
+    update_scrollbar_visibility();
+    update_widget_min_size();
     AbstractScrollableWidget::resize_event(event);
-    update_widget_position();
     update_widget_size();
+    update_widget_position();
 }
 
 void ScrollableContainerWidget::set_widget(GUI::Widget* widget)
@@ -79,6 +89,7 @@ void ScrollableContainerWidget::set_widget(GUI::Widget* widget)
         add_child(*m_widget);
         m_widget->move_to_back();
     }
+    update_widget_min_size();
     update_widget_size();
     update_widget_position();
 }
