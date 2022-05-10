@@ -6,8 +6,14 @@
         spacing: 4
     }
 
-    @Spreadsheet::ConditionsView {
-        name: "conditions_view"
+    // FIXME: Update scrollbar when conditions are added or removed,
+    //        currently this only happens after window resizing
+    @GUI::ScrollableContainerWidget {
+        should_hide_unnecessary_scrollbars: true
+
+        content_widget: @Spreadsheet::ConditionsView {
+            name: "conditions_view"
+        }
     }
 
     @GUI::Widget {
