@@ -924,6 +924,7 @@ void Window::set_current_backing_store(WindowBackingStore& backing_store, bool f
         m_window_id,
         32,
         bitmap.pitch(),
+        bitmap.scale(),
         bitmap.anonymous_buffer().fd(),
         backing_store.serial(),
         bitmap.has_alpha_channel(),
