@@ -24,8 +24,9 @@ public:
 private:
     ConnectionToWindowServer(NonnullOwnPtr<Core::Stream::LocalSocket>);
 
+
     virtual void fast_greet(Vector<Gfx::IntRect> const&, u32, u32, u32, Core::AnonymousBuffer const&, DeprecatedString const&, DeprecatedString const&, DeprecatedString const&, Vector<bool> const&, i32) override;
-    virtual void paint(i32, Gfx::IntSize, Vector<Gfx::IntRect> const&) override;
+    virtual void paint(i32, Gfx::IntSize, i32, Vector<Gfx::IntRect> const&) override;
     virtual void mouse_move(i32, Gfx::IntPoint, u32, u32, u32, i32, i32, i32, i32, bool, Vector<DeprecatedString> const&) override;
     virtual void mouse_down(i32, Gfx::IntPoint, u32, u32, u32, i32, i32, i32, i32) override;
     virtual void mouse_double_click(i32, Gfx::IntPoint, u32, u32, u32, i32, i32, i32, i32) override;
@@ -40,8 +41,8 @@ private:
     virtual void window_input_preempted(i32) override;
     virtual void window_input_restored(i32) override;
     virtual void window_close_request(i32) override;
-    virtual void window_resized(i32, Gfx::IntRect const&) override;
     virtual void window_moved(i32, Gfx::IntRect const&) override;
+    virtual void window_target_buffer_change(i32, Gfx::IntSize, i32) override;
     virtual void menu_item_activated(i32, u32) override;
     virtual void menu_item_entered(i32, u32) override;
     virtual void menu_item_left(i32, u32) override;

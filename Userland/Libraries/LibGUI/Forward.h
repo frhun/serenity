@@ -61,6 +61,7 @@ class PersistentModelIndex;
 class RadioButton;
 class ResizeCorner;
 class ResizeEvent;
+class TargetBufferChangeEvent;
 class ScreenRectsChangeEvent;
 class Scrollbar;
 class AbstractScrollableWidget;

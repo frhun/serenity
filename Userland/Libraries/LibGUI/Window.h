@@ -252,8 +252,8 @@ private:
     void handle_mouse_event(MouseEvent&);
     void handle_multi_paint_event(MultiPaintEvent&);
     void handle_key_event(KeyEvent&);
-    void handle_resize_event(ResizeEvent&);
     void handle_input_preemption_event(Core::Event&);
+    void handle_target_buffer_change_event(TargetBufferChangeEvent&);
     void handle_became_active_or_inactive_event(Core::Event&);
     void handle_close_request();
     void handle_theme_change_event(ThemeChangeEvent&);
@@ -266,7 +266,7 @@ private:
 
     void server_did_destroy();
 
-    ErrorOr<NonnullOwnPtr<WindowBackingStore>> create_backing_store(Gfx::IntSize);
+    ErrorOr<NonnullOwnPtr<WindowBackingStore>> create_backing_store(Gfx::IntSize, int scale_factor);
     Gfx::IntSize backing_store_size(Gfx::IntSize) const;
     void set_current_backing_store(WindowBackingStore&, bool flush_immediately = false) const;
     void flip(Vector<Gfx::IntRect, 32> const& dirty_rects);

@@ -47,6 +47,7 @@ public:
     Gfx::Bitmap const& bitmap() const { return *m_bitmap; }
 
     Gfx::IntSize size() const { return m_bitmap->size(); }
+    int scale_factor() const { return m_bitmap->scale(); }
 
     i32 serial() const { return m_serial; }
 
@@ -443,7 +444,7 @@ void Window::handle_multi_paint_event(MultiPaintEvent& event)
     // Throw away our backing store if its size is different, and we've stopped resizing or double buffering is disabled.
     // This ensures that we shrink the backing store after a resize, and that we do not get flickering artifacts when
     // directly painting into a shared active backing store.
-    if (m_back_store && (!m_resizing || !m_double_buffering_enabled) && m_back_store->size() != event.window_size())
+    if (m_back_store && (!m_resizing || !m_double_buffering_enabled) && (m_back_store->size() != event.window_size() || m_back_store->scale_factor() != event.scale_factor()))
         m_back_store = nullptr;
 
     // Discard our backing store if it's unable to contain the new window size. Smaller is fine though, that prevents
@@ -453,7 +454,7 @@ void Window::handle_multi_paint_event(MultiPaintEvent& event)
 
     bool created_new_backing_store = false;
     if (!m_back_store) {
-        m_back_store = create_backing_store(backing_store_size(event.window_size())).release_value_but_fixme_should_propagate_errors();
+        m_back_store = create_backing_store(backing_store_size(event.window_size()), event.scale_factor()).release_value_but_fixme_should_propagate_errors();
         created_new_backing_store = true;
     } else if (m_double_buffering_enabled) {
         bool was_purged = false;
@@ -552,7 +553,7 @@ void Window::handle_key_event(KeyEvent& event)
         propagate_shortcuts_up_to_application(event, nullptr);
 }
 
-void Window::handle_resize_event(ResizeEvent& event)
+void Window::handle_target_buffer_change_event(TargetBufferChangeEvent& event)
 {
     auto new_size = event.size();
 
@@ -738,8 +739,8 @@ void Window::event(Core::Event& event)
     if (event.type() == Event::WindowLeft)
         return handle_left_event(event);
 
-    if (event.type() == Event::Resize)
-        return handle_resize_event(static_cast<ResizeEvent&>(event));
+    if (event.type() == Event::TargetBufferChange)
+        return handle_target_buffer_change_event(static_cast<TargetBufferChangeEvent&>(event));
 
     if (event.type() > Event::__Begin_WM_Events && event.type() < Event::__End_WM_Events)
         return wm_event(static_cast<WMEvent&>(event));
@@ -956,7 +957,7 @@ void Window::flip(Vector<Gfx::IntRect, 32> const& dirty_rects)
     set_current_backing_store(*m_front_store);
 
     if (!m_back_store || m_back_store->size() != m_front_store->size()) {
-        m_back_store = create_backing_store(m_front_store->size()).release_value_but_fixme_should_propagate_errors();
+        m_back_store = create_backing_store(m_front_store->size(), m_front_store->scale_factor()).release_value_but_fixme_should_propagate_errors();
         memcpy(m_back_store->bitmap().scanline(0), m_front_store->bitmap().scanline(0), m_front_store->bitmap().size_in_bytes());
         m_back_store->bitmap().set_volatile();
         return;
@@ -970,18 +971,17 @@ void Window::flip(Vector<Gfx::IntRect, 32> const& dirty_rects)
     m_back_store->bitmap().set_volatile();
 }
 
-ErrorOr<NonnullOwnPtr<WindowBackingStore>> Window::create_backing_store(Gfx::IntSize size)
+ErrorOr<NonnullOwnPtr<WindowBackingStore>> Window::create_backing_store(Gfx::IntSize size, int scale_factor)
 {
     auto format = m_has_alpha_channel ? Gfx::BitmapFormat::BGRA8888 : Gfx::BitmapFormat::BGRx8888;
 
     VERIFY(!size.is_empty());
-    size_t pitch = Gfx::Bitmap::minimum_pitch(size.width(), format);
-    size_t size_in_bytes = size.height() * pitch;
+    size_t pitch = Gfx::Bitmap::minimum_pitch(size.width() * scale_factor, format);
+    size_t size_in_bytes = size.height() * pitch * scale_factor;
 
     auto buffer = TRY(Core::AnonymousBuffer::create_with_size(round_up_to_power_of_two(size_in_bytes, PAGE_SIZE)));
 
-    // FIXME: Plumb scale factor here eventually.
-    auto bitmap = TRY(Gfx::Bitmap::create_with_anonymous_buffer(format, buffer, size, 1, {}));
+    auto bitmap = TRY(Gfx::Bitmap::create_with_anonymous_buffer(format, buffer, size, scale_factor, {}));
     return make<WindowBackingStore>(bitmap);
 }
 
@@ -1371,7 +1371,7 @@ void Window::flush_pending_paints_immediately()
         return;
     if (m_pending_paint_event_rects.is_empty())
         return;
-    MultiPaintEvent paint_event(move(m_pending_paint_event_rects), size());
+    MultiPaintEvent paint_event(move(m_pending_paint_event_rects), size(), scale_factor());
     handle_multi_paint_event(paint_event);
 }
 

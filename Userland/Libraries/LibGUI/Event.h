@@ -29,6 +29,7 @@ public:
         MultiPaint,
         Resize,
         Move,
+        TargetBufferChange,
         MouseMove,
         MouseDown,
         MouseDoubleClick,
@@ -265,19 +266,22 @@ private:
 
 class MultiPaintEvent final : public Event {
 public:
-    explicit MultiPaintEvent(Vector<Gfx::IntRect, 32> rects, Gfx::IntSize window_size)
+    explicit MultiPaintEvent(Vector<Gfx::IntRect, 32> rects, Gfx::IntSize window_size, int scale_factor)
         : Event(Event::MultiPaint)
         , m_rects(move(rects))
         , m_window_size(window_size)
+        , m_scale_factor(scale_factor)
     {
     }
 
     Vector<Gfx::IntRect, 32> const& rects() const { return m_rects; }
     Gfx::IntSize window_size() const { return m_window_size; }
+    int scale_factor() const { return m_scale_factor; }
 
 private:
     Vector<Gfx::IntRect, 32> m_rects;
     Gfx::IntSize m_window_size;
+    int m_scale_factor;
 };
 
 class PaintEvent final : public Event {
@@ -323,6 +327,24 @@ public:
 
 private:
     Gfx::IntPoint m_position;
+};
+
+
+class TargetBufferChangeEvent final : public Event {
+public:
+    explicit TargetBufferChangeEvent(Gfx::IntSize size, int scale_factor)
+        : Event(Event::TargetBufferChange)
+        , m_size(size)
+        , m_scale_factor(scale_factor)
+    {
+    }
+
+    Gfx::IntSize size() const { return m_size; }
+    int scale_factor() const { return m_scale_factor; }
+
+private:
+    Gfx::IntSize m_size;
+    int m_scale_factor;
 };
 
 class ContextMenuEvent final : public Event {
