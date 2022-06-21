@@ -72,8 +72,12 @@ public:
     void draw_ellipse_intersecting(IntRect const&, Color, int thickness = 1);
     void set_pixel(IntPoint, Color, bool blend = false);
     void set_pixel(int x, int y, Color color, bool blend = false) { set_pixel({ x, y }, color, blend); }
+    void set_pixel_translated(IntPoint, Color, bool blend = false);
+    void set_pixel_translated(int x, int y, Color color, bool blend = false) { set_pixel_translated({ x, y }, color, blend); }
     Optional<Color> get_pixel(IntPoint);
     ErrorOr<NonnullRefPtr<Bitmap>> get_region_bitmap(IntRect const&, BitmapFormat format, Optional<IntRect&> actual_region = {});
+    void set_pixel_scaled(IntPoint, Color, bool blend = false);
+    void set_pixel_scaled(int x, int y, Color color, bool blend = false) { set_pixel_scaled({ x, y }, color, blend); }
     void draw_line(IntPoint, IntPoint, Color, int thickness = 1, LineStyle style = LineStyle::Solid, Color alternate_color = Color::Transparent);
     void draw_triangle_wave(IntPoint, IntPoint, Color color, int amplitude, int thickness = 1);
     void draw_quadratic_bezier_curve(IntPoint control_point, IntPoint, IntPoint, Color, int thickness = 1, LineStyle style = LineStyle::Solid);
