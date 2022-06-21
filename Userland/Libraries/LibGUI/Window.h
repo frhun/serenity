@@ -109,6 +109,7 @@ public:
     Gfx::IntRect rect() const;
     Gfx::IntRect applet_rect_on_screen() const;
     Gfx::IntSize size() const { return rect().size(); }
+    void set_supported_scale_factors(Vector<int> const&);
     void set_rect(Gfx::IntRect const&);
     void set_rect(int x, int y, int width, int height) { set_rect({ x, y, width, height }); }
 
@@ -291,6 +292,7 @@ private:
     Gfx::IntRect m_rect_when_windowless;
     Gfx::IntSize m_minimum_size_when_windowless { 0, 0 };
     DeprecatedString m_title_when_windowless;
+    Vector<int, 3> m_supported_scale_factors { 1, 2 };
     Vector<Gfx::IntRect, 32> m_pending_paint_event_rects;
     Gfx::IntSize m_size_increment;
     Gfx::IntSize m_base_size;
