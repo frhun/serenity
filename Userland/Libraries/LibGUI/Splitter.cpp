@@ -42,10 +42,10 @@ void Splitter::paint_event(PaintEvent& event)
     auto palette = this->palette();
 
     auto paint_knurl = [&](int x, int y) {
-        painter.set_pixel(x, y, palette.threed_shadow1());
-        painter.set_pixel(x + 1, y, palette.threed_shadow1());
-        painter.set_pixel(x, y + 1, palette.threed_shadow1());
-        painter.set_pixel(x + 1, y + 1, palette.threed_highlight());
+        painter.set_pixel_scaled(x, y, palette.threed_shadow1());
+        painter.set_pixel_scaled(x + 1, y, palette.threed_shadow1());
+        painter.set_pixel_scaled(x, y + 1, palette.threed_shadow1());
+        painter.set_pixel_scaled(x + 1, y + 1, palette.threed_highlight());
     };
 
     constexpr size_t knurl_width = 2;
