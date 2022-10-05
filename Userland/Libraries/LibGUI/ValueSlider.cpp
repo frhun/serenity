@@ -91,10 +91,10 @@ void ValueSlider::paint_event(PaintEvent& event)
     Gfx::StylePainter::paint_button(painter, knob_rect(), palette(), Gfx::ButtonStyle::Normal, false, m_hovered);
 
     auto paint_knurl = [&](int x, int y) {
-        painter.set_pixel(x, y, palette().threed_shadow1());
-        painter.set_pixel(x + 1, y, palette().threed_shadow1());
-        painter.set_pixel(x, y + 1, palette().threed_shadow1());
-        painter.set_pixel(x + 1, y + 1, palette().threed_highlight());
+        painter.set_pixel_scaled(x, y, palette().threed_shadow1());
+        painter.set_pixel_scaled(x + 1, y, palette().threed_shadow1());
+        painter.set_pixel_scaled(x, y + 1, palette().threed_shadow1());
+        painter.set_pixel_scaled(x + 1, y + 1, palette().threed_highlight());
     };
 
     auto knurl_rect = knob_rect().shrunken(4, 8);

@@ -375,7 +375,7 @@ void TerminalWidget::paint_event(GUI::PaintEvent& event)
                 int y = cell_rect.bottom_left().y();
                 for (int x = x1; x <= x2; ++x) {
                     if ((x % 3) == 0)
-                        painter.set_pixel({ x, y }, underline_color);
+                        painter.set_pixel_scaled({ x, y }, underline_color);
                 }
             }
         }
@@ -442,13 +442,13 @@ void TerminalWidget::paint_event(GUI::PaintEvent& event)
             auto x2 = cell_rect.bottom_right().x();
             auto y = cell_rect.bottom_left().y();
             for (auto x = x1; x <= x2; ++x)
-                painter.set_pixel({ x, y }, cursor_color);
+                painter.set_pixel_scaled({ x, y }, cursor_color);
         } else if (m_cursor_shape == VT::CursorShape::Bar) {
             auto x = cell_rect.bottom_left().x();
             auto y1 = cell_rect.top_left().y();
             auto y2 = cell_rect.bottom_left().y();
             for (auto y = y1; y <= y2; ++y)
-                painter.set_pixel({ x, y }, cursor_color);
+                painter.set_pixel_scaled({ x, y }, cursor_color);
         } else {
             // We fall back to a block if we don't support the selected cursor type.
             painter.draw_rect(cell_rect, cursor_color);

@@ -58,25 +58,25 @@ void OpacitySlider::paint_event(PaintEvent& event)
         int notch_x = inner_rect.left() + ((float)value() / (float)max() * (float)inner_rect.width());
 
         // Top notch
-        painter.set_pixel(notch_x, notch_y_top, palette().threed_shadow2());
+        painter.set_pixel_scaled(notch_x, notch_y_top, palette().threed_shadow2());
         for (int i = notch_size; i >= 0; --i) {
-            painter.set_pixel(notch_x - (i + 1), notch_y_top - i - 1, palette().threed_highlight());
+            painter.set_pixel_scaled(notch_x - (i + 1), notch_y_top - i - 1, palette().threed_highlight());
             for (int j = 0; j < i * 2; ++j) {
-                painter.set_pixel(notch_x - (i + 1) + j + 1, notch_y_top - i - 1, palette().button());
+                painter.set_pixel_scaled(notch_x - (i + 1) + j + 1, notch_y_top - i - 1, palette().button());
             }
-            painter.set_pixel(notch_x + (i + 0), notch_y_top - i - 1, palette().threed_shadow1());
-            painter.set_pixel(notch_x + (i + 1), notch_y_top - i - 1, palette().threed_shadow2());
+            painter.set_pixel_scaled(notch_x + (i + 0), notch_y_top - i - 1, palette().threed_shadow1());
+            painter.set_pixel_scaled(notch_x + (i + 1), notch_y_top - i - 1, palette().threed_shadow2());
         }
 
         // Bottom notch
-        painter.set_pixel(notch_x, notch_y_bottom, palette().threed_shadow2());
+        painter.set_pixel_scaled(notch_x, notch_y_bottom, palette().threed_shadow2());
         for (int i = 0; i < notch_size; ++i) {
-            painter.set_pixel(notch_x - (i + 1), notch_y_bottom + i + 1, palette().threed_highlight());
+            painter.set_pixel_scaled(notch_x - (i + 1), notch_y_bottom + i + 1, palette().threed_highlight());
             for (int j = 0; j < i * 2; ++j) {
-                painter.set_pixel(notch_x - (i + 1) + j + 1, notch_y_bottom + i + 1, palette().button());
+                painter.set_pixel_scaled(notch_x - (i + 1) + j + 1, notch_y_bottom + i + 1, palette().button());
             }
-            painter.set_pixel(notch_x + (i + 0), notch_y_bottom + i + 1, palette().threed_shadow1());
-            painter.set_pixel(notch_x + (i + 1), notch_y_bottom + i + 1, palette().threed_shadow2());
+            painter.set_pixel_scaled(notch_x + (i + 0), notch_y_bottom + i + 1, palette().threed_shadow1());
+            painter.set_pixel_scaled(notch_x + (i + 1), notch_y_bottom + i + 1, palette().threed_shadow2());
         }
 
         // Hairline
@@ -94,25 +94,25 @@ void OpacitySlider::paint_event(PaintEvent& event)
         int notch_y = inner_rect.top() + ((float)value() / (float)max() * (float)inner_rect.height());
 
         // Left notch
-        painter.set_pixel(notch_x_left, notch_y, palette().threed_shadow2());
+        painter.set_pixel_scaled(notch_x_left, notch_y, palette().threed_shadow2());
         for (int i = notch_size; i >= 0; --i) {
-            painter.set_pixel(notch_x_left - i - 1, notch_y - (i + 1), palette().threed_highlight());
+            painter.set_pixel_scaled(notch_x_left - i - 1, notch_y - (i + 1), palette().threed_highlight());
             for (int j = 0; j < i * 2; ++j) {
-                painter.set_pixel(notch_x_left - i - 1, notch_y - (i + 1) + j + 1, palette().button());
+                painter.set_pixel_scaled(notch_x_left - i - 1, notch_y - (i + 1) + j + 1, palette().button());
             }
-            painter.set_pixel(notch_x_left - i - 1, notch_y + (i + 0), palette().threed_shadow1());
-            painter.set_pixel(notch_x_left - i - 1, notch_y + (i + 1), palette().threed_shadow2());
+            painter.set_pixel_scaled(notch_x_left - i - 1, notch_y + (i + 0), palette().threed_shadow1());
+            painter.set_pixel_scaled(notch_x_left - i - 1, notch_y + (i + 1), palette().threed_shadow2());
         }
 
         // Bottom notch
-        painter.set_pixel(notch_x_right, notch_y, palette().threed_shadow2());
+        painter.set_pixel_scaled(notch_x_right, notch_y, palette().threed_shadow2());
         for (int i = 0; i < notch_size; ++i) {
-            painter.set_pixel(notch_x_right + i + 1, notch_y - (i + 1), palette().threed_highlight());
+            painter.set_pixel_scaled(notch_x_right + i + 1, notch_y - (i + 1), palette().threed_highlight());
             for (int j = 0; j < i * 2; ++j) {
-                painter.set_pixel(notch_x_right + i + 1, notch_y - (i + 1) + j + 1, palette().button());
+                painter.set_pixel_scaled(notch_x_right + i + 1, notch_y - (i + 1) + j + 1, palette().button());
             }
-            painter.set_pixel(notch_x_right + i + 1, notch_y + (i + 0), palette().threed_shadow1());
-            painter.set_pixel(notch_x_right + i + 1, notch_y + (i + 1), palette().threed_shadow2());
+            painter.set_pixel_scaled(notch_x_right + i + 1, notch_y + (i + 0), palette().threed_shadow1());
+            painter.set_pixel_scaled(notch_x_right + i + 1, notch_y + (i + 1), palette().threed_shadow2());
         }
 
         // Hairline
