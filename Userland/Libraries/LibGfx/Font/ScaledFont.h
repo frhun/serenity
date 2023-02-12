@@ -16,11 +16,12 @@
 
 namespace Gfx {
 
-struct GlyphIndexWithSubpixelOffset {
+struct GlyphIndexWithSubpixelOffsetAndScale {
     u32 glyph_id;
     GlyphSubpixelOffset subpixel_offset;
+    i32 scale;
 
-    bool operator==(GlyphIndexWithSubpixelOffset const&) const = default;
+    bool operator==(GlyphIndexWithSubpixelOffsetAndScale const&) const = default;
 };
 
 class ScaledFont final : public Gfx::Font {
@@ -29,7 +30,7 @@ public:
     u32 glyph_id_for_code_point(u32 code_point) const { return m_font->glyph_id_for_code_point(code_point); }
     ScaledFontMetrics metrics() const { return m_font->metrics(m_x_scale, m_y_scale); }
     ScaledGlyphMetrics glyph_metrics(u32 glyph_id) const { return m_font->glyph_metrics(glyph_id, m_x_scale, m_y_scale); }
-    RefPtr<Gfx::Bitmap> rasterize_glyph(u32 glyph_id, GlyphSubpixelOffset) const;
+    RefPtr<Gfx::Bitmap> rasterize_glyph(u32 glyph_id, GlyphSubpixelOffset, i32 scale) const;
 
     // ^Gfx::Font
     virtual NonnullRefPtr<Font> clone() const override { return MUST(try_clone()); } // FIXME: clone() should not need to be implemented
@@ -40,9 +41,9 @@ public:
     virtual u8 slope() const override { return m_font->slope(); }
     virtual u16 width() const override { return m_font->width(); }
     virtual u16 weight() const override { return m_font->weight(); }
-    virtual Gfx::Glyph glyph(u32 code_point) const override;
+    virtual Gfx::Glyph glyph(u32 code_point, i32 scale) const override;
     virtual float glyph_left_bearing(u32 code_point) const override;
-    virtual Glyph glyph(u32 code_point, GlyphSubpixelOffset) const override;
+    virtual Glyph glyph(u32 code_point, GlyphSubpixelOffset, i32 scale) const override;
     virtual bool contains_glyph(u32 code_point) const override { return m_font->glyph_id_for_code_point(code_point) > 0; }
     virtual float glyph_width(u32 code_point) const override;
     virtual float glyph_or_emoji_width(u32 code_point) const override;
@@ -75,7 +76,7 @@ private:
     float m_y_scale { 0.0f };
     float m_point_width { 0.0f };
     float m_point_height { 0.0f };
-    mutable HashMap<GlyphIndexWithSubpixelOffset, RefPtr<Gfx::Bitmap>> m_cached_glyph_bitmaps;
+    mutable HashMap<GlyphIndexWithSubpixelOffsetAndScale, RefPtr<Gfx::Bitmap>> m_cached_glyph_bitmaps;
     Gfx::FontPixelMetrics m_pixel_metrics;
 
     template<typename T>
@@ -87,10 +88,10 @@ private:
 namespace AK {
 
 template<>
-struct Traits<Gfx::GlyphIndexWithSubpixelOffset> : public GenericTraits<Gfx::GlyphIndexWithSubpixelOffset> {
-    static unsigned hash(Gfx::GlyphIndexWithSubpixelOffset const& index)
+struct Traits<Gfx::GlyphIndexWithSubpixelOffsetAndScale> : public GenericTraits<Gfx::GlyphIndexWithSubpixelOffsetAndScale> {
+    static unsigned hash(Gfx::GlyphIndexWithSubpixelOffsetAndScale const& index)
     {
-        return pair_int_hash(index.glyph_id, (index.subpixel_offset.x << 8) | index.subpixel_offset.y);
+        return pair_int_hash(index.glyph_id, (index.subpixel_offset.x << 8) | index.subpixel_offset.y | index.scale << 16);
     }
 };
 

@@ -20,7 +20,7 @@ class Encoding;
 class Type1FontProgram : public RefCounted<Type1FontProgram> {
 
 public:
-    RefPtr<Gfx::Bitmap> rasterize_glyph(DeprecatedFlyString const& char_name, float width, Gfx::GlyphSubpixelOffset subpixel_offset);
+    RefPtr<Gfx::Bitmap> rasterize_glyph(DeprecatedFlyString const& char_name, float width, Gfx::GlyphSubpixelOffset subpixel_offset, i32 scale);
     Gfx::FloatPoint glyph_translation(DeprecatedFlyString const& char_name, float width) const;
     RefPtr<Encoding> encoding() const { return m_encoding; }
 

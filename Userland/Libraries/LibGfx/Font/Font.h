@@ -160,8 +160,8 @@ public:
     virtual u16 width() const = 0;
 
     virtual u16 weight() const = 0;
-    virtual Glyph glyph(u32 code_point) const = 0;
-    virtual Glyph glyph(u32 code_point, GlyphSubpixelOffset) const = 0;
+    virtual Glyph glyph(u32 code_point, i32 scale) const = 0;
+    virtual Glyph glyph(u32 code_point, GlyphSubpixelOffset, i32 scale) const = 0;
     virtual bool contains_glyph(u32 code_point) const = 0;
 
     virtual float glyph_left_bearing(u32 code_point) const = 0;

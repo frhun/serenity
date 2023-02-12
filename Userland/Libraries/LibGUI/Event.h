@@ -329,7 +329,6 @@ private:
     Gfx::IntPoint m_position;
 };
 
-
 class TargetBufferChangeEvent final : public Event {
 public:
     explicit TargetBufferChangeEvent(Gfx::IntSize size, int scale_factor)

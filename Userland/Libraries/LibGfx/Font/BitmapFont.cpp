@@ -267,7 +267,7 @@ ErrorOr<void> BitmapFont::write_to_file(DeprecatedString const& path)
     return {};
 }
 
-Glyph BitmapFont::glyph(u32 code_point) const
+Glyph BitmapFont::glyph(u32 code_point, [[maybe_unused]] i32 scale) const
 {
     // Note: Until all fonts support the 0xFFFD replacement
     // character, fall back to painting '?' if necessary.

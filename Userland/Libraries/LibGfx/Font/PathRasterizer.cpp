@@ -8,8 +8,9 @@
 
 namespace Gfx {
 
-PathRasterizer::PathRasterizer(Gfx::IntSize size)
-    : m_size(size)
+PathRasterizer::PathRasterizer(Gfx::IntSize size, i32 scale)
+    : m_size(size * scale)
+    , m_scale(scale)
 {
     m_data.resize(m_size.width() * m_size.height());
     for (int i = 0; i < m_size.width() * m_size.height(); i++) {
@@ -25,7 +26,7 @@ void PathRasterizer::draw_path(Gfx::Path& path)
 
 RefPtr<Gfx::Bitmap> PathRasterizer::accumulate()
 {
-    auto bitmap_or_error = Gfx::Bitmap::create(Gfx::BitmapFormat::BGRA8888, m_size);
+    auto bitmap_or_error = Gfx::Bitmap::create(Gfx::BitmapFormat::BGRA8888, { m_size.width() / m_scale, m_size.height() / m_scale }, m_scale);
     if (bitmap_or_error.is_error())
         return {};
     auto bitmap = bitmap_or_error.release_value_but_fixme_should_propagate_errors();

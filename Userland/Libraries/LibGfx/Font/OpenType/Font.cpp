@@ -585,7 +585,7 @@ float Font::glyphs_horizontal_kerning(u32 left_glyph_id, u32 right_glyph_id, flo
 }
 
 // FIXME: "loca" and "glyf" are not available for CFF fonts.
-RefPtr<Gfx::Bitmap> Font::rasterize_glyph(u32 glyph_id, float x_scale, float y_scale, Gfx::GlyphSubpixelOffset subpixel_offset) const
+RefPtr<Gfx::Bitmap> Font::rasterize_glyph(u32 glyph_id, float x_scale, float y_scale, Gfx::GlyphSubpixelOffset subpixel_offset, i32 scale) const
 {
     if (glyph_id >= glyph_count()) {
         glyph_id = 0;
@@ -604,7 +604,7 @@ RefPtr<Gfx::Bitmap> Font::rasterize_glyph(u32 glyph_id, float x_scale, float y_s
         descender = m_hhea.descender();
     }
 
-    return glyph.rasterize(ascender, descender, x_scale, y_scale, subpixel_offset, [&](u16 glyph_id) {
+    return glyph.rasterize(ascender, descender, x_scale, y_scale, subpixel_offset, scale, [&](u16 glyph_id) {
         if (glyph_id >= glyph_count()) {
             glyph_id = 0;
         }

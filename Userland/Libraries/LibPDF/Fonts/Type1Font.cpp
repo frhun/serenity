@@ -90,15 +90,18 @@ void Type1Font::draw_glyph(Gfx::Painter& painter, Gfx::FloatPoint point, float w
     auto translation = m_data.font_program->glyph_translation(char_name, width);
     point = point.translated(translation);
 
+    i32 scale = 1;
+    // TODO: Get scale depending on render requirements
+
     auto glyph_position = Gfx::GlyphRasterPosition::get_nearest_fit_for(point);
-    Gfx::GlyphIndexWithSubpixelOffset index { char_code, glyph_position.subpixel_offset };
+    Gfx::GlyphIndexWithSubpixelOffsetAndScale index { char_code, glyph_position.subpixel_offset, scale };
 
     RefPtr<Gfx::Bitmap> bitmap;
     auto maybe_bitmap = m_glyph_cache.get(index);
     if (maybe_bitmap.has_value()) {
         bitmap = maybe_bitmap.value();
     } else {
-        bitmap = m_data.font_program->rasterize_glyph(char_name, width, glyph_position.subpixel_offset);
+        bitmap = m_data.font_program->rasterize_glyph(char_name, width, glyph_position.subpixel_offset, scale);
         m_glyph_cache.set(index, bitmap);
     }
 

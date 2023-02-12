@@ -34,7 +34,7 @@ public:
 
 private:
     Data m_data;
-    HashMap<Gfx::GlyphIndexWithSubpixelOffset, RefPtr<Gfx::Bitmap>> m_glyph_cache;
+    HashMap<Gfx::GlyphIndexWithSubpixelOffsetAndScale, RefPtr<Gfx::Bitmap>> m_glyph_cache;
 };
 
 }

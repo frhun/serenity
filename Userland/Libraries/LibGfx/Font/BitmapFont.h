@@ -52,8 +52,8 @@ public:
     virtual u8 slope() const override { return m_slope; }
     void set_slope(u8 slope) { m_slope = slope; }
 
-    Glyph glyph(u32 code_point) const override;
-    Glyph glyph(u32 code_point, GlyphSubpixelOffset) const override { return glyph(code_point); }
+    Glyph glyph(u32 code_point, i32 scale) const override;
+    Glyph glyph(u32 code_point, GlyphSubpixelOffset, i32 scale) const override { return glyph(code_point, scale); }
 
     float glyph_left_bearing(u32) const override { return 0; }
 

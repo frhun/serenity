@@ -52,7 +52,7 @@ enum ExtendedCommand {
     Flex1,
 };
 
-RefPtr<Gfx::Bitmap> Type1FontProgram::rasterize_glyph(DeprecatedFlyString const& char_name, float width, Gfx::GlyphSubpixelOffset subpixel_offset)
+RefPtr<Gfx::Bitmap> Type1FontProgram::rasterize_glyph(DeprecatedFlyString const& char_name, float width, Gfx::GlyphSubpixelOffset subpixel_offset, i32 scale)
 {
     auto path = build_char(char_name, width, subpixel_offset);
     auto bounding_box = path.bounding_box().size();
@@ -60,7 +60,7 @@ RefPtr<Gfx::Bitmap> Type1FontProgram::rasterize_glyph(DeprecatedFlyString const&
     u32 w = (u32)ceilf(bounding_box.width()) + 2;
     u32 h = (u32)ceilf(bounding_box.height()) + 2;
 
-    Gfx::PathRasterizer rasterizer(Gfx::IntSize(w, h));
+    Gfx::PathRasterizer rasterizer(Gfx::IntSize(w, h), scale);
     rasterizer.draw_path(path);
     return rasterizer.accumulate();
 }

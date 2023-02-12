@@ -189,7 +189,6 @@ void Painter::fill_rect_with_dither_pattern(IntRect const& a_rect, Color color_a
     }
 }
 
-
 void Painter::fill_rect_with_checkerboard(IntRect const& a_rect, IntSize cell_size, Color color_dark, Color color_light)
 {
     cell_size *= scale();
@@ -1370,7 +1369,7 @@ FLATTEN void Painter::draw_glyph(FloatPoint point, u32 code_point, Font const& f
 {
     auto top_left = point + FloatPoint(font.glyph_left_bearing(code_point), 0);
     auto glyph_position = Gfx::GlyphRasterPosition::get_nearest_fit_for(top_left);
-    auto glyph = font.glyph(code_point, glyph_position.subpixel_offset);
+    auto glyph = font.glyph(code_point, glyph_position.subpixel_offset, scale());
 
     if (glyph.is_glyph_bitmap()) {
         draw_bitmap(top_left.to_type<int>(), glyph.glyph_bitmap(), color);
@@ -1843,7 +1842,6 @@ void Painter::draw_text(Function<void(FloatRect const&, Utf8CodePointIterator&)>
 {
     return draw_text(move(draw_one_glyph), rect.to_type<float>(), raw_text, font, alignment, elision, wrapping);
 }
-
 
 void Painter::set_pixel_translated(IntPoint p, Color color, bool blend)
 {
